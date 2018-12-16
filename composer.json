@@ -1,0 +1,39 @@
+{
+	"name": "chillerlan/php-cryptobox",
+	"description": "",
+	"homepage": "https://github.com/chillerlan/php-cryptobox",
+	"license": "MIT",
+	"type": "library",
+	"minimum-stability": "stable",
+	"keywords": [
+		"crypto", "sodium", "php7"
+	],
+	"authors": [
+		{
+			"name": "Smiley",
+			"email": "smiley@chillerlan.net",
+			"homepage": "https://github.com/codemasher"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/chillerlan/php-cryptobox/issues",
+		"source": "https://github.com/chillerlan/php-cryptobox"
+	},
+	"require": {
+		"php": "^7.2",
+		"ext-sodium": "*"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^7.5"
+	},
+	"autoload": {
+		"psr-4": {
+			"chillerlan\\Cryptobox\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"chillerlan\\CryptoboxTest\\": "tests/"
+		}
+	}
+}
