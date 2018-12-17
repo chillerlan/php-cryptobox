@@ -8,12 +8,6 @@ matrix:
   allow_failures:
   - php: nightly
 
-before_install:
-  # Manually compile the libsodium library. This sucks, Travis. https://github.com/travis-ci/travis-ci/issues/8863
-  - git clone -b stable https://github.com/jedisct1/libsodium.git
-  - cd libsodium && sudo ./configure && sudo make check && sudo make install && cd ..
-
-install: pecl install libsodium
 before_script: travis_retry composer install --no-interaction --prefer-source
 script: vendor/bin/phpunit --configuration phpunit.xml --coverage-clover clover.xml
 after_script: bash <(curl -s https://codecov.io/bash)
