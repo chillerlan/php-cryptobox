@@ -12,8 +12,16 @@
 
 namespace chillerlan\TraitTest\Crypto;
 
-use chillerlan\Cryptobox\{Box, BoxKeypair, CryptoKeypairInterface, SealedBox, SecretBox, SignedMessage, SignKeypair};
+use chillerlan\Cryptobox\{
+	Box, BoxKeypair, CryptoException, CryptoKeypairInterface, SealedBox, SecretBox, SignedMessage, SignKeypair
+};
 use PHPUnit\Framework\TestCase;
+use SodiumException;
+
+use function extension_loaded, function_exists, sodium_hex2bin, strlen;
+
+use const SODIUM_CRYPTO_BOX_KEYPAIRBYTES, SODIUM_CRYPTO_BOX_PUBLICKEYBYTES, SODIUM_CRYPTO_BOX_SECRETKEYBYTES,
+	SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES, SODIUM_CRYPTO_SIGN_SECRETKEYBYTES;
 
 class CryptoBoxTest extends TestCase{
 
@@ -31,7 +39,7 @@ class CryptoBoxTest extends TestCase{
 	 */
 	protected $keypair;
 
-	public function setUp(){
+	public function setUp():void{
 
 		if(!extension_loaded('sodium') || !function_exists('sodium_memzero')){
 			$this->markTestSkipped('sodium extension (PHP 7.2+) required!');
@@ -48,8 +56,6 @@ class CryptoBoxTest extends TestCase{
 		$this->assertSame(SODIUM_CRYPTO_BOX_KEYPAIRBYTES, strlen($keypair->keypair));
 		$this->assertSame(SODIUM_CRYPTO_BOX_SECRETKEYBYTES, strlen($keypair->secret));
 		$this->assertSame(SODIUM_CRYPTO_BOX_PUBLICKEYBYTES, strlen($keypair->public));
-
-		unset($keypair); // trigger destructor
 	}
 
 	public function testCreateBoxKeypairFromSeed(){
@@ -59,11 +65,10 @@ class CryptoBoxTest extends TestCase{
 		$this->assertSame(sodium_hex2bin($this::TESTKEY_BOX_PUBLIC_FROM_SEED), $keypair->public);
 	}
 
-	/**
-	 * @expectedException \chillerlan\Cryptobox\CryptoException
-	 * @expectedExceptionMessage invalid seed length
-	 */
 	public function testCreateBoxKeypairInvalidSeed(){
+		$this->expectException(CryptoException::class);
+		$this->expectExceptionMessage('invalid seed length');
+
 		(new BoxKeypair)->create('0');
 	}
 
@@ -74,11 +79,10 @@ class CryptoBoxTest extends TestCase{
 		$this->assertSame(sodium_hex2bin($this::TESTKEY_BOX_PUBLIC_FROM_SECRET), $keypair->public);
 	}
 
-	/**
-	 * @expectedException \chillerlan\Cryptobox\CryptoException
-	 * @expectedExceptionMessage invalid secret key length
-	 */
 	public function testCreateBoxKeypairFromSecretInvalidLength(){
+		$this->expectException(CryptoException::class);
+		$this->expectExceptionMessage('invalid secret key length');
+
 		(new BoxKeypair)->createFromSecret('0');
 	}
 
@@ -100,11 +104,10 @@ class CryptoBoxTest extends TestCase{
 		$this->assertSame(sodium_hex2bin($this::TESTKEY_SIGN_PUBLIC_FROM_SEED), $keypair->public);
 	}
 
-	/**
-	 * @expectedException \chillerlan\Cryptobox\CryptoException
-	 * @expectedExceptionMessage invalid seed length
-	 */
 	public function testCreateSignKeypairInvalidSeed(){
+		$this->expectException(CryptoException::class);
+		$this->expectExceptionMessage('invalid seed length');
+
 		(new SignKeypair)->create('0');
 	}
 
@@ -122,29 +125,26 @@ class CryptoBoxTest extends TestCase{
 		$this->assertSame($this::TESTMESSAGE, $d->message);
 	}
 
-	/**
-	 * @expectedException \chillerlan\Cryptobox\CryptoException
-	 * @expectedExceptionMessage invalid message
-	 */
 	public function testCreateBoxInvalidMessage(){
+		$this->expectException(CryptoException::class);
+		$this->expectExceptionMessage('invalid message');
+
 		(new Box($this->keypair))->create('', null);
 	}
 
-	/**
-	 * @expectedException \chillerlan\Cryptobox\CryptoException
-	 * @expectedExceptionMessage invalid secret key
-	 */
 	public function testCreateBoxInvalidSecret(){
+		$this->expectException(CryptoException::class);
+		$this->expectExceptionMessage('invalid secret key');
+
 		$keypair = new BoxKeypair(sodium_hex2bin('DEADBEEF'), $this::TESTKEY_BIN);
 
 		(new Box($keypair))->create($this::TESTMESSAGE, null);
 	}
 
-	/**
-	 * @expectedException \chillerlan\Cryptobox\CryptoException
-	 * @expectedExceptionMessage invalid public key
-	 */
 	public function testCreateBoxInvalidPublic(){
+		$this->expectException(CryptoException::class);
+		$this->expectExceptionMessage('invalid public key');
+
 		$keypair = new BoxKeypair($this::TESTKEY_BIN, sodium_hex2bin('DEADBEEF'));
 
 		(new Box($keypair))->create($this::TESTMESSAGE, null);
@@ -164,11 +164,10 @@ class CryptoBoxTest extends TestCase{
 		$this->assertSame($this::TESTMESSAGE, $d->message);
 	}
 
-	/**
-	 * @expectedException \SodiumException
-	 * @expectedExceptionMessage nonce size should be SODIUM_CRYPTO_SECRETBOX_NONCEBYTES bytes
-	 */
 	public function testCreateSecretBoxInvalidNonce(){
+		$this->expectException(SodiumException::class);
+		$this->expectExceptionMessage('nonce size should be SODIUM_CRYPTO_SECRETBOX_NONCEBYTES bytes');
+
 		(new SecretBox($this->keypair))->create($this::TESTMESSAGE, 'foo');
 	}
 
