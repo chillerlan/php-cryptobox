@@ -12,6 +12,10 @@
 
 namespace chillerlan\Cryptobox;
 
+use function sodium_crypto_sign, sodium_crypto_sign_open, sodium_memzero;
+
+use const SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES, SODIUM_CRYPTO_SIGN_SECRETKEYBYTES;
+
 class SignedMessage extends CryptoBoxAbstract{
 
 	/** @inheritdoc */

@@ -12,6 +12,11 @@
 
 namespace chillerlan\Cryptobox;
 
+use function sodium_crypto_box_keypair_from_secretkey_and_publickey, sodium_crypto_box_seal,
+	sodium_crypto_box_seal_open, sodium_memzero;
+
+use const SODIUM_CRYPTO_BOX_PUBLICKEYBYTES, SODIUM_CRYPTO_BOX_SECRETKEYBYTES;
+
 class SealedBox extends CryptoBoxAbstract{
 
 	/** @inheritdoc */

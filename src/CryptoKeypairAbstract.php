@@ -12,6 +12,8 @@
 
 namespace chillerlan\Cryptobox;
 
+use function property_exists;
+
 /**
  * @link https://paragonie.com/book/pecl-libsodium/read/00-intro.md
  * @link https://paragonie.com/book/pecl-libsodium/read/01-quick-start.md

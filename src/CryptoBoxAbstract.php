@@ -12,6 +12,8 @@
 
 namespace chillerlan\Cryptobox;
 
+use function property_exists, strlen, trim;
+
 /**
  * @link https://paragonie.com/book/pecl-libsodium/read/00-intro.md
  * @link https://paragonie.com/book/pecl-libsodium/read/01-quick-start.md
@@ -58,23 +60,19 @@ abstract class CryptoBoxAbstract implements CryptoBoxInterface{
 
 	/**
 	 * @param int $secretLength
-	 * @param int $PublicLength
+	 * @param int $publicLength
 	 *
 	 * @return void
 	 * @throws \chillerlan\Cryptobox\CryptoException
 	 */
-	protected function checkKeypair(int $secretLength = null, int $PublicLength = null):void{
+	protected function checkKeypair(int $secretLength = null, int $publicLength = null):void{
 
-		if($secretLength !== null){
-			if(!$this->keypair->secret || strlen($this->keypair->secret) !== $secretLength){
-				throw new CryptoException('invalid secret key');
-			}
+		if($secretLength !== null && (!$this->keypair->secret || strlen($this->keypair->secret) !== $secretLength)){
+			throw new CryptoException('invalid secret key');
 		}
 
-		if($PublicLength !== null){
-			if(!$this->keypair->public || strlen($this->keypair->public) !== $PublicLength){
-				throw new CryptoException('invalid public key');
-			}
+		if($publicLength !== null && (!$this->keypair->public || strlen($this->keypair->public) !== $publicLength)){
+			throw new CryptoException('invalid public key');
 		}
 
 	}

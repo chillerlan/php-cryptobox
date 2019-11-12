@@ -12,6 +12,11 @@
 
 namespace chillerlan\Cryptobox;
 
+use function sodium_crypto_box_keypair, sodium_crypto_box_publickey, sodium_crypto_box_publickey_from_secretkey,
+	sodium_crypto_box_secretkey, sodium_crypto_box_seed_keypair, sodium_memzero, strlen;
+
+use const SODIUM_CRYPTO_BOX_SECRETKEYBYTES, SODIUM_CRYPTO_BOX_SEEDBYTES;
+
 class BoxKeypair extends CryptoKeypairAbstract{
 
 	/**
@@ -29,8 +34,8 @@ class BoxKeypair extends CryptoKeypairAbstract{
 			? sodium_crypto_box_seed_keypair($seed_bin)
 			: sodium_crypto_box_keypair();
 
-		$this->secret  = sodium_crypto_box_secretkey($this->keypair);
-		$this->public  = sodium_crypto_box_publickey($this->keypair);
+		$this->secret = sodium_crypto_box_secretkey($this->keypair);
+		$this->public = sodium_crypto_box_publickey($this->keypair);
 
 		if($seed_bin !== null){
 			sodium_memzero($seed_bin);

@@ -12,6 +12,11 @@
 
 namespace chillerlan\Cryptobox;
 
+use function random_bytes, sodium_crypto_box, sodium_crypto_box_keypair_from_secretkey_and_publickey,
+	sodium_crypto_box_open, sodium_memzero;
+
+use const SODIUM_CRYPTO_BOX_NONCEBYTES, SODIUM_CRYPTO_BOX_PUBLICKEYBYTES, SODIUM_CRYPTO_BOX_SECRETKEYBYTES;
+
 class Box extends CryptoBoxAbstract{
 
 	/**

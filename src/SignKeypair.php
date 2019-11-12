@@ -12,6 +12,11 @@
 
 namespace chillerlan\Cryptobox;
 
+use function sodium_crypto_sign_keypair, sodium_crypto_sign_publickey, sodium_crypto_sign_secretkey,
+	sodium_crypto_sign_seed_keypair, sodium_memzero, strlen;
+
+use const SODIUM_CRYPTO_SIGN_SEEDBYTES;
+
 class SignKeypair extends CryptoKeypairAbstract{
 
 	/**
